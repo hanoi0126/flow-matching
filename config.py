@@ -13,7 +13,7 @@ class TrainConfig:
 @dataclass
 class WandbConfig:
     project: str
-    entiry: str
+    entity: str
 
 
 @dataclass

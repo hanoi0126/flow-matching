@@ -25,8 +25,8 @@ class Unet(nn.Module):
         dim: int,
         dim_mults: tuple[int, ...] = (1, 2, 4, 8),
         channels: int = 3,
-        condition: bool = False,
         resnet_block_groups: int = 4,
+        condition: bool = False,
     ) -> None:
         super().__init__()
 

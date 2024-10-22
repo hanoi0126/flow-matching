@@ -28,7 +28,7 @@ def euler_sampler(
     sample_N: int,
     eps: float,
     device: torch.device,
-    condition: bool = False,
+    condition: bool,
 ) -> tuple[Tensor, int]:
     model.eval()
     cond = torch.arange(10).repeat(shape[0] // 10).to(device) if condition else None
@@ -54,7 +54,7 @@ def rk45_sampler(
     shape: tuple[int, int, int, int],
     eps: Tensor,
     device: torch.device,
-    condition: bool = False,
+    condition: bool,
 ) -> tuple[Tensor, Any]:
 
     rtol = atol = 1e-05
@@ -107,13 +107,17 @@ def save_img_grid(img: Tensor, filename: str) -> None:
     imshow(img_grid, filename)
 
 
-@hydra.main(version_base=None, config_path="config", config_name="train_config")
+@hydra.main(version_base=None, config_path="config", config_name="mnist_config")
 def train(cfg: MainConfig) -> None:
+
     print(OmegaConf.to_yaml(cfg))
+
+    if cfg.train.condition:
+        print("Conditional training")
 
     wandb.login(key=os.environ["WANDB_API_KEY"])
 
-    wandb.init(project=cfg.wandb.project, entity=cfg.wandb.entiry, name=cfg.now_dir)
+    wandb.init(project=cfg.wandb.project, entity=cfg.wandb.entity, name=cfg.now_dir)
 
     transform = transforms.Compose(
         [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
@@ -131,6 +135,7 @@ def train(cfg: MainConfig) -> None:
         dim=32,
         channels=1,
         dim_mults=(1, 2, 4),
+        condition=cfg.train.condition,
     )
     model.to(device)
 
