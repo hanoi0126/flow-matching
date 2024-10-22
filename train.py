@@ -168,6 +168,4 @@ def train(cfg: MainConfig) -> None:
 
 
 if __name__ == "__main__":
-    
-
-
+    train()
