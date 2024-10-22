@@ -25,15 +25,15 @@ class Unet(nn.Module):
         dim: int,
         dim_mults: tuple[int, ...] = (1, 2, 4, 8),
         channels: int = 3,
-        self_condition: bool = False,
+        condition: bool = False,
         resnet_block_groups: int = 4,
     ) -> None:
         super().__init__()
 
         # determine dimensions
         self.channels = channels
-        self.self_condition = self_condition
-        input_channels = channels * (2 if self_condition else 1)
+        self.condition = condition
+        input_channels = channels
 
         init_dim = dim
         self.init_conv = nn.Conv2d(
