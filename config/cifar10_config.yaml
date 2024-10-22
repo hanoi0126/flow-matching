@@ -1,12 +1,12 @@
 train:
-  batch_size: 128
+  batch_size: 1024
   learning_rate: 0.001
-  num_epochs: 10
+  num_epochs: 1000
   eps: 0.001
   condition: True
 
 wandb:
-  project: flow-matching-mnist
+  project: flow-matching-cifar10
   entity: hiroto-weblab
 
 now_dir: ${now:%Y-%m-%d}/${now:%H-%M-%S}
