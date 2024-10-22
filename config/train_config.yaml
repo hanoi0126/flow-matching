@@ -1,0 +1,12 @@
+train:
+  batch_size: 128
+  learning_rate: 0.001
+  num_epochs: 10
+  eps: 0.001
+
+wandb:
+  project: flow-matching
+  entiry: hiroto-weblab
+
+now_dir: ${now:%Y-%m-%d}/${now:%H-%M-%S}
+output_dir: outputs/${now_dir}
