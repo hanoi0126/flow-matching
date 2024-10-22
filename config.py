@@ -7,6 +7,7 @@ class TrainConfig:
     learning_rate: float
     num_epochs: int
     eps: float
+    condition: bool
 
 
 @dataclass

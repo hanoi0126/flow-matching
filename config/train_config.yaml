@@ -3,6 +3,7 @@ train:
   learning_rate: 0.001
   num_epochs: 10
   eps: 0.001
+  condition: True
 
 wandb:
   project: flow-matching
