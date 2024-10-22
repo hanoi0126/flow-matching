@@ -1852,6 +1852,26 @@ gdown = ["gdown (>=4.7.3)"]
 scipy = ["scipy"]
 
 [[package]]
+name = "tqdm"
+version = "4.66.5"
+description = "Fast, Extensible Progress Meter"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "tqdm-4.66.5-py3-none-any.whl", hash = "sha256:90279a3770753eafc9194a0364852159802111925aa30eb3f9d85b0e805ac7cd"},
+    {file = "tqdm-4.66.5.tar.gz", hash = "sha256:e1020aef2e5096702d8a025ac7d16b1577279c9d63f8375b63083e9a5f0fcbad"},
+]
+
+[package.dependencies]
+colorama = {version = "*", markers = "platform_system == \"Windows\""}
+
+[package.extras]
+dev = ["pytest (>=6)", "pytest-cov", "pytest-timeout", "pytest-xdist"]
+notebook = ["ipywidgets (>=6)"]
+slack = ["slack-sdk"]
+telegram = ["requests"]
+
+[[package]]
 name = "triton"
 version = "3.1.0"
 description = "A language and compiler for custom Deep Learning operations"
@@ -1950,4 +1970,4 @@ workspaces = ["wandb-workspaces"]
 [metadata]
 lock-version = "2.0"
 python-versions = "3.10.11"
-content-hash = "a8598dca55f02a482e86bb61a12734963aa574d68f6de6aed20570c0b85c4197"
+content-hash = "2d1600cb547f35ccfe9701e1a9de3b091ff3b38f1451b2def358e2f5354ab24b"

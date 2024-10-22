@@ -7,14 +7,15 @@ import numpy as np
 import torch
 import torch.optim as optim
 import torchvision
-import wandb
 from dotenv import load_dotenv
 from omegaconf import OmegaConf
 from scipy import integrate
 from torch import Tensor
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
+from tqdm import tqdm
 
+import wandb
 from config import MainConfig
 from model.unet import Unet
 
@@ -129,7 +130,11 @@ def train(cfg: MainConfig) -> None:
     for epoch in range(cfg.train.num_epochs):
         total_loss = 0.0
         model.train()
-        for batch, _ in dataloader:
+
+        progress_bar = tqdm(
+            dataloader, desc=f"Epoch {epoch + 1}/{cfg.train.num_epochs}", leave=False
+        )
+        for batch_idx, (batch, _) in enumerate(progress_bar):
             batch = batch.to(device)
 
             optimizer.zero_grad()
@@ -158,6 +163,10 @@ def train(cfg: MainConfig) -> None:
 
             total_loss += loss.item()
 
+            progress_bar.set_postfix(
+                {"batch_loss": loss.item(), "batch_size": batch.size(0)}
+            )
+
         print(f"Epoch {epoch + 1}, Loss: {total_loss / len(dataloader)}")
         wandb.log({"Epoch": epoch + 1, "Loss": total_loss / len(dataloader)})
 
@@ -165,21 +174,21 @@ def train(cfg: MainConfig) -> None:
             model, shape=(100, 1, 28, 28), sample_N=1, eps=cfg.train.eps, device=device
         )
         save_img_grid(
-            images, f"{cfg.output_dir}/euler_epoch_{epoch + 1:3}_nfe_{nfe:3}.png"
+            images, f"{cfg.output_dir}/euler_epoch_{epoch + 1:03}_nfe_{nfe:03}.png"
         )
 
         images, nfe = euler_sampler(
             model, shape=(100, 1, 28, 28), sample_N=2, eps=cfg.train.eps, device=device
         )
         save_img_grid(
-            images, f"{cfg.output_dir}/euler_epoch_{epoch + 1:3}_nfe_{nfe:3}.png"
+            images, f"{cfg.output_dir}/euler_epoch_{epoch + 1:03}_nfe_{nfe:03}.png"
         )
 
         images, nfe = euler_sampler(
             model, shape=(100, 1, 28, 28), sample_N=10, eps=cfg.train.eps, device=device
         )
         save_img_grid(
-            images, f"{cfg.output_dir}/euler_epoch_{epoch + 1:3}_nfe_{nfe:3}.png"
+            images, f"{cfg.output_dir}/euler_epoch_{epoch + 1:03}_nfe_{nfe:03}.png"
         )
 
         images, nfe = rk45_sampler(
@@ -189,7 +198,7 @@ def train(cfg: MainConfig) -> None:
             device=device,
         )
         save_img_grid(
-            images, f"{cfg.output_dir}/rk45_epoch_{epoch + 1:3}_nfe_{nfe:3}.png"
+            images, f"{cfg.output_dir}/rk45_epoch_{epoch + 1:03}_nfe_{nfe:03}.png"
         )
 
 
