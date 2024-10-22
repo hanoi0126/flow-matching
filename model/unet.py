@@ -23,7 +23,7 @@ class Unet(nn.Module):
     def __init__(
         self,
         dim: int,
-        dim_mults: tuple[int, int, int, int] = (1, 2, 4, 8),
+        dim_mults: tuple[int, ...] = (1, 2, 4, 8),
         channels: int = 3,
         self_condition: bool = False,
         resnet_block_groups: int = 4,

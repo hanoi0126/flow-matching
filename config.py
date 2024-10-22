@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Train:
+class TrainConfig:
     batch_size: int
     learning_rate: float
     num_epochs: int
@@ -10,14 +10,14 @@ class Train:
 
 
 @dataclass
-class Wandb:
+class WandbConfig:
     project: str
     entiry: str
 
 
 @dataclass
 class MainConfig:
-    wandb: Wandb = Wandb()
-    train: Train = Train()
+    wandb: WandbConfig
+    train: TrainConfig
     now_dir: str
     output_dir: str
