@@ -1,0 +1,11 @@
+train:
+  batch_size: 1024
+  learning_rate: 0.001
+  num_epochs: 1000
+  eps: 0.001
+  condition: true
+wandb:
+  project: flow-matching-cifar10
+  entity: hiroto-weblab
+now_dir: ${now:%Y-%m-%d}/${now:%H-%M-%S}
+output_dir: outputs/${now_dir}

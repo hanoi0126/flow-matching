@@ -12,7 +12,6 @@ from omegaconf import OmegaConf
 from scipy import integrate
 from torch import Tensor
 from torch.utils.data import DataLoader
-from torch.utils.tensorboard import SummaryWriter
 from torchvision import datasets, transforms
 from tqdm import tqdm
 
@@ -154,8 +153,6 @@ def train(cfg: MainConfig) -> None:
     wandb.login(key=os.environ["WANDB_API_KEY"])
     wandb.init(project=cfg.wandb.project, entity=cfg.wandb.entity, name=cfg.now_dir)
 
-    writer = SummaryWriter(log_dir=f"{cfg.output_dir}/logs")
-
     transform = transforms.Compose(
         [
             transforms.RandomHorizontalFlip(),
@@ -182,14 +179,15 @@ def train(cfg: MainConfig) -> None:
 
     optimizer = optim.Adam(model.parameters(), lr=cfg.train.learning_rate)
 
+    progress_bar = tqdm(
+        total=cfg.train.num_epochs, desc="Training Progress", leave=True
+    )
+
     for epoch in range(cfg.train.num_epochs):
         total_loss = 0.0
         model.train()
 
-        progress_bar = tqdm(
-            dataloader, desc=f"Epoch {epoch + 1}/{cfg.train.num_epochs}", leave=False
-        )
-        for batch_idx, (batch, cond) in enumerate(progress_bar):
+        for batch_idx, (batch, cond) in enumerate(dataloader):
             batch = batch.to(device)
 
             optimizer.zero_grad()
@@ -228,7 +226,9 @@ def train(cfg: MainConfig) -> None:
 
         print(f"Epoch {epoch + 1}, Loss: {total_loss / len(dataloader)}")
         wandb.log({"Epoch": epoch + 1, "Loss": total_loss / len(dataloader)})
-        writer.add_scalar("Loss/train", total_loss / len(dataloader), epoch)
+
+        progress_bar.set_postfix({"epoch_loss": total_loss / len(dataloader)})
+        progress_bar.update(1)
 
         if epoch < 10 or (epoch + 1) % 10 == 0:
             eval(
@@ -272,6 +272,7 @@ def train(cfg: MainConfig) -> None:
             )
 
         if (epoch + 1) % 100 == 0:
+            os.makedirs(f"{cfg.output_dir}/checkpoints", exist_ok=True)
             torch.save(
                 model.state_dict(),
                 os.path.join(
